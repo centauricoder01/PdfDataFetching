@@ -2,8 +2,9 @@ const XLSX = require("xlsx");
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
-// const pdfjsLib = require("pdfjs-dist");
-import { PdfReader } from "pdfreader";
+const pdfjsLib = require("pdfjs-dist");
+const { Buffer } = require("buffer");
+
 
 // FUNCTION TO READ THE URL FROM .XLSX FILE
 
@@ -74,9 +75,40 @@ const outputFolder = "./pdf-storage";
 
 // FUNCTION TO READ THE PDF FILE AND STORE THE DATA.
 
+async function readPDFFile(pdfFilePath) {
+  try {
+    // Read the PDF file as a buffer
+    const pdfBuffer = fs.readFileSync(pdfFilePath);
 
-new PdfReader().parseFileItems("test/sample.pdf", (err, item) => {
-  if (err) console.error("error:", err);
-  else if (!item) console.warn("end of file");
-  else if (item.text) console.log(item.text);
-});
+    // Convert the Buffer to Uint8Array
+    const uint8Array = new Uint8Array(pdfBuffer);
+
+    // Load the PDF file using pdfjs-dist and await the promise
+    const pdfDocument = await pdfjsLib.getDocument({ data: uint8Array })
+      .promise;
+
+    // Get the first (and only) page of the PDF
+    const page = await pdfDocument.getPage(1);
+
+    // Extract text content from the page
+    const textContent = await page.getTextContent();
+    const pdfText = textContent.items.map((item) => item.str).join(" ");
+
+    return pdfText;
+  } catch (error) {
+    console.error("Error reading the PDF file:", error.message);
+    return null;
+  }
+}
+
+// Example usage:
+const pdfFilePath = "./pdf-storage/raj.pdf";
+
+readPDFFile(pdfFilePath)
+  .then((pdfText) => {
+    if (pdfText) {
+      console.log("PDF content:");
+      console.log(pdfText);
+    }
+  })
+  .catch((error) => console.error(error));
