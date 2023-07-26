@@ -3,8 +3,8 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 const pdfjsLib = require("pdfjs-dist");
+const XlsxPopulate = require("xlsx-populate");
 const { Buffer } = require("buffer");
-
 
 // FUNCTION TO READ THE URL FROM .XLSX FILE
 
@@ -103,12 +103,48 @@ async function readPDFFile(pdfFilePath) {
 
 // Example usage:
 const pdfFilePath = "./pdf-storage/raj.pdf";
+const outputFilePath = "output.xlsx";
 
 readPDFFile(pdfFilePath)
   .then((pdfText) => {
     if (pdfText) {
       console.log("PDF content:");
       console.log(pdfText);
+      saveToExcel(pdfText, outputFilePath);
     }
   })
   .catch((error) => console.error(error));
+
+//   FUNCTION TO WRITE ALL THE DATA IN .XLSX FILE
+
+async function saveToExcel(pdfText, outputFilePath) {
+  try {
+    // Split the extracted text into lines
+    const lines = pdfText.split("\n");
+
+    // Create a new workbook
+    const workbook = await XlsxPopulate.fromBlankAsync();
+
+    // Select the first sheet in the workbook
+    const sheet = workbook.sheet(0);
+
+    // Write the data to the Excel sheet
+    for (let rowIndex = 0; rowIndex < lines.length; rowIndex++) {
+      const line = lines[rowIndex];
+      // Assuming data in each line is separated by a delimiter (e.g., comma)
+      const data = line.split(",");
+
+      for (let colIndex = 0; colIndex < data.length; colIndex++) {
+        const value = data[colIndex];
+        // Write the value to the cell in the Excel sheet
+        sheet.cell(rowIndex + 1, colIndex + 1).value(value);
+      }
+    }
+
+    // Save the workbook to the specified output file
+    await workbook.toFileAsync(outputFilePath);
+    console.log("Data saved to Excel file:", outputFilePath);
+  } catch (error) {
+    console.error("Error saving to Excel file:", error.message);
+  }
+}
