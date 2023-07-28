@@ -1,5 +1,6 @@
 import  XLSX from "xlsx";
 import { downloadPDFsFromUrls } from "./Other_functions/DownloadPDF";
+import { processPDFs } from "./Other_functions/ReadPDF";
 
 // FUNCTION TO READ THE URL FROM .XLSX FILE
 
@@ -33,5 +34,8 @@ const outputFolder = "./pdf-storage";
 
 
  downloadPDFsFromUrls(urls, outputFolder);  // FUNCTOIN USED TO DOWNLOAD ALL THE PDF WITH LINK.
+// Call the function to process the downloaded PDFs
+ processPDFs(urls, outputFolder);
+
 
 
