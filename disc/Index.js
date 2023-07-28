@@ -24,3 +24,5 @@ const url_column = "Invoice Download Link";
 const urls = takeURL(file_path, sheet_name, url_column);
 const outputFolder = "./pdf-storage";
 (0, DownloadPDF_1.downloadPDFsFromUrls)(urls, outputFolder); // FUNCTOIN USED TO DOWNLOAD ALL THE PDF WITH LINK.
+// Call the function to process the downloaded PDFs
+//  processPDFs(urls, outputFolder);
