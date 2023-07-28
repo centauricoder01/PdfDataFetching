@@ -1,26 +1,20 @@
 import  XLSX from "xlsx";
 import { downloadPDFsFromUrls } from "./Other_functions/DownloadPDF";
-import pdfjsLib  from "pdfjs-dist";
-import { Buffer }  from "buffer";
 
 // FUNCTION TO READ THE URL FROM .XLSX FILE
 
 interface DataRow {
-  [key: string]: string; // Assuming all properties in the row are strings
+  [key: string]: string; 
 }
 
 function takeURL(file_path:string, sheet_name:string, url_column:string): string[] {
   try {
-    // Read the workbook
     const workbook = XLSX.readFile(file_path);
 
-    // Select the sheet by name
     const sheet = workbook.Sheets[sheet_name];
 
-    // Convert the sheet to a JSON object
     const data: DataRow[] = XLSX.utils.sheet_to_json(sheet);
 
-    // Extract the URLs from the specified column
     const urls:string[] = data.map((row:DataRow) => row[url_column]).filter((url) => url);
 
     return urls;
@@ -37,4 +31,7 @@ const url_column = "Invoice Download Link";
 const urls = takeURL(file_path, sheet_name, url_column);
 const outputFolder = "./pdf-storage";
 
-downloadPDFsFromUrls(urls, outputFolder);
+
+ downloadPDFsFromUrls(urls, outputFolder);  // FUNCTOIN USED TO DOWNLOAD ALL THE PDF WITH LINK.
+
+
