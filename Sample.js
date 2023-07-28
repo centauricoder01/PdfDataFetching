@@ -1,14 +1,17 @@
-const XLSX = require("xlsx");
-const axios = require("axios");
-const fs = require("fs");
-const path = require("path");
-const pdfjsLib = require("pdfjs-dist");
-const XlsxPopulate = require("xlsx-populate");
-const { Buffer } = require("buffer");
+import XLSX from "xlsx";
+import axios from "axios";
+import fs from "fs";
+import path from "path";
+import pdfjsLib from "pdfjs-dist";
+import { Buffer } from "buffer";
 
 // FUNCTION TO READ THE URL FROM .XLSX FILE
 
-function takeURL(file_path, sheet_name, url_column) {
+function takeURL(
+  file_path: string,
+  sheet_name: string,
+  url_column: string
+): string {
   try {
     // Read the workbook
     const workbook = XLSX.readFile(file_path);
@@ -37,7 +40,7 @@ const urls = takeURL(file_path, sheet_name, url_column);
 
 // FUNCTION TO DOWNLOAD THE PDF.
 
-async function downloadPDF(url, outputFolder) {
+async function downloadPDF(url: string, outputFolder: string) {
   try {
     const response = await axios.get(url, {
       responseType: "arraybuffer",
@@ -58,7 +61,7 @@ async function downloadPDF(url, outputFolder) {
 
 // FUNCTION TO DOWNLOAD THE PDF FROM THE ARRAY
 
-async function downloadPDFsFromUrls(pdfUrls, outputFolder) {
+async function downloadPDFsFromUrls(pdfUrls: string, outputFolder: string) {
   try {
     for (const url of pdfUrls) {
       await downloadPDF(url, outputFolder);
@@ -71,7 +74,7 @@ async function downloadPDFsFromUrls(pdfUrls, outputFolder) {
 
 const outputFolder = "./pdf-storage";
 
-// downloadPDFsFromUrls(urls, outputFolder);
+downloadPDFsFromUrls(urls, outputFolder);
 
 // FUNCTION TO READ THE PDF FILE AND STORE THE DATA.
 
@@ -110,41 +113,41 @@ readPDFFile(pdfFilePath)
     if (pdfText) {
       console.log("PDF content:");
       console.log(pdfText);
-      saveToExcel(pdfText, outputFilePath);
+      //   saveToExcel(pdfText, outputFilePath);
     }
   })
   .catch((error) => console.error(error));
 
 //   FUNCTION TO WRITE ALL THE DATA IN .XLSX FILE
 
-async function saveToExcel(pdfText, outputFilePath) {
-  try {
-    // Split the extracted text into lines
-    const lines = pdfText.split("\n");
+// async function saveToExcel(pdfText, outputFilePath) {
+//   try {
+//     // Split the extracted text into lines
+//     const lines = pdfText.split("\n");
 
-    // Create a new workbook
-    const workbook = await XlsxPopulate.fromBlankAsync();
+//     // Create a new workbook
+//     const workbook = await XlsxPopulate.fromBlankAsync();
 
-    // Select the first sheet in the workbook
-    const sheet = workbook.sheet(0);
+//     // Select the first sheet in the workbook
+//     const sheet = workbook.sheet(0);
 
-    // Write the data to the Excel sheet
-    for (let rowIndex = 0; rowIndex < lines.length; rowIndex++) {
-      const line = lines[rowIndex];
-      // Assuming data in each line is separated by a delimiter (e.g., comma)
-      const data = line.split(",");
+//     // Write the data to the Excel sheet
+//     for (let rowIndex = 0; rowIndex < lines.length; rowIndex++) {
+//       const line = lines[rowIndex];
+//       // Assuming data in each line is separated by a delimiter (e.g., comma)
+//       const data = line.split(",");
 
-      for (let colIndex = 0; colIndex < data.length; colIndex++) {
-        const value = data[colIndex];
-        // Write the value to the cell in the Excel sheet
-        sheet.cell(rowIndex + 1, colIndex + 1).value(value);
-      }
-    }
+//       for (let colIndex = 0; colIndex < data.length; colIndex++) {
+//         const value = data[colIndex];
+//         // Write the value to the cell in the Excel sheet
+//         sheet.cell(rowIndex + 1, colIndex + 1).value(value);
+//       }
+//     }
 
-    // Save the workbook to the specified output file
-    await workbook.toFileAsync(outputFilePath);
-    console.log("Data saved to Excel file:", outputFilePath);
-  } catch (error) {
-    console.error("Error saving to Excel file:", error.message);
-  }
-}
+//     // Save the workbook to the specified output file
+//     await workbook.toFileAsync(outputFilePath);
+//     console.log("Data saved to Excel file:", outputFilePath);
+//   } catch (error) {
+//     console.error("Error saving to Excel file:", error.message);
+//   }
+// }
