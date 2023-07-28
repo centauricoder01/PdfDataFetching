@@ -8,10 +8,10 @@ import { Buffer } from "buffer";
 // FUNCTION TO READ THE URL FROM .XLSX FILE
 
 function takeURL(
-  file_path: string,
-  sheet_name: string,
-  url_column: string
-): string {
+  file_path,
+  sheet_name,
+  url_column
+) {
   try {
     // Read the workbook
     const workbook = XLSX.readFile(file_path);
@@ -40,7 +40,7 @@ const urls = takeURL(file_path, sheet_name, url_column);
 
 // FUNCTION TO DOWNLOAD THE PDF.
 
-async function downloadPDF(url: string, outputFolder: string) {
+async function downloadPDF(url, outputFolder) {
   try {
     const response = await axios.get(url, {
       responseType: "arraybuffer",
@@ -61,7 +61,7 @@ async function downloadPDF(url: string, outputFolder: string) {
 
 // FUNCTION TO DOWNLOAD THE PDF FROM THE ARRAY
 
-async function downloadPDFsFromUrls(pdfUrls: string, outputFolder: string) {
+async function downloadPDFsFromUrls(pdfUrls, outputFolder) {
   try {
     for (const url of pdfUrls) {
       await downloadPDF(url, outputFolder);

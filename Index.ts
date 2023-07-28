@@ -1,7 +1,5 @@
 import  XLSX from "xlsx";
-import axios  from "axios";
-import fs  from "fs";
-import path  from "path";
+import { downloadPDFsFromUrls } from "./Other_functions/DownloadPDF";
 import pdfjsLib  from "pdfjs-dist";
 import { Buffer }  from "buffer";
 
@@ -37,5 +35,6 @@ const sheet_name = "Sheet1";
 const url_column = "Invoice Download Link";
 
 const urls = takeURL(file_path, sheet_name, url_column);
+const outputFolder = "./pdf-storage";
 
-console.log(urls)
+downloadPDFsFromUrls(urls, outputFolder);
